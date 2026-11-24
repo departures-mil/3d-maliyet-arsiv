@@ -1,0 +1,12 @@
+{
+  "name": "3d-maliyet-arsiv",
+  "version": "1.0.0",
+  "private": true,
+  "description": "3D Maliyet ve Arşiv — 3D baskı maliyet/kâr hesabı, arşiv, malzeme (filament) stoku ve yazıcı kayıtları. Windows masaüstü (kurulumlu).",
+  "license": "UNLICENSED",
+  "scripts": {
+    "test": "node --test test/app.test.js test/kabuk.test.js",
+    "paket": "node araclar/paket.js",
+    "surum": "node araclar/surum.js"
+  }
+}
