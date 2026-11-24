@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="tr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>3D Maliyet ve Arşiv</title>
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="cekirdek/css/tokens.css">
+<link rel="stylesheet" href="cekirdek/css/core.css">
+<link rel="stylesheet" href="css/app.css">
+<!-- Kabuk (Go) window.fcHost'u kurar; düz tarayıcıda 404 → çekirdek tarayıcı kipi -->
+<script src="/__shell/host.js"></script>
+</head>
+<body>
+<div class="shell" id="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="brand-txt"><b data-i18n="app.name">3D Maliyet ve Arşiv</b><em id="brandVer"></em></span>
+    </div>
+    <nav id="nav" class="nav"></nav>
+  </aside>
+  <div class="drawer-backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar" id="topbar">
+      <button type="button" class="icon-btn menu-btn" id="menuBtn" aria-label="Menu"><svg class="fc-i" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <div class="topbar-title"><h1 id="pageTitle"></h1><p id="pageSub"></p></div>
+      <div class="topright" id="topRight"></div>
+    </header>
+    <main class="content" id="content"></main>
+  </div>
+</div>
+<div class="drop-hint" aria-hidden="true"><div><svg class="fc-i" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg><b data-i18n="imp.dropHere">Bırakın: dilimleyici görseli, G-code ya da 3MF</b></div></div>
+
+<script src="cekirdek/fc-core.js"></script>
+<script src="lib/qrcode.js"></script>
+<script src="js/surum.js"></script>
+<script src="js/metin.js"></script>
+<script src="js/db.js"></script>
+<script src="js/hesap.js"></script>
+<script src="js/ortak.js"></script>
+<script src="js/alanlar.js"></script>
+<script src="js/panel.js"></script>
+<script src="js/hesapla.js"></script>
+<script src="js/arsiv.js"></script>
+<script src="js/iceaktar.js"></script>
+<script src="js/malzeme.js"></script>
+<script src="js/yazici.js"></script>
+<script src="js/musteri.js"></script>
+<script src="js/yz.js"></script>
+<script src="js/esitle.js"></script>
+<script src="js/wifi.js"></script>
+<script src="js/ayarlar.js"></script>
+<script src="js/kabuk.js"></script>
+<script src="js/ana.js"></script>
+</body>
+</html>
