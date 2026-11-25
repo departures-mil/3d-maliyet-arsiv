@@ -92,6 +92,7 @@
     A.sync.start();
     A.wifi.start();
     A.kabuk.started();
+    setTimeout(function () { A.matImport.inbox(); }, 1200);
     setTimeout(rates, 2500);
     if (S.settings.lowWarn !== false) { var low = S.materials.filter(A.isLow).length; if (low) setTimeout(function () { A.toast(t('m.lowToast', { n: low }), 'info'); }, 2000); }
     /* rozetler (düşük stok, bakım) değişikliklerden sonra tazelenir */

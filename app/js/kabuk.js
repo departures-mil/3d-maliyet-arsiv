@@ -15,6 +15,11 @@
 
   /* sürüm notları ("neler yeni"; release-notes.json ile aynı) */
   var NEWS = {
+    '1.0.2': {
+      tr: '- Falcon Ofis malzemeleri otomatik aktarılır: veri klasöründeki “ice-aktar” kutusuna konan dosya açılışta Malzemeler\'e işlenir (çift kayıt yok, hiçbir şey silinmez)\n- İçe aktarmada TL fiyatlar dolara çevrilir',
+      en: '- Falcon Office materials are imported automatically: a file placed in the data folder\'s “ice-aktar” box is merged into Materials at start-up (no duplicates, nothing deleted)\n- Imported TRY prices are converted to USD',
+      ar: '- تُستورد مواد فالكون أوفيس تلقائيًا: الملف الموضوع في صندوق «ice-aktar» داخل مجلد البيانات يُدمج في المواد عند التشغيل (بلا تكرار ولا حذف)\n- تُحوَّل الأسعار بالليرة التركية إلى الدولار عند الاستيراد'
+    },
     '1.0.1': {
       tr: '- Malzemeler: “İçe aktar” düğmesi — Falcon Ofis “Döküm al” CSV dosyası ya da CSV/JSON ile filamentler tek seferde aktarılır (kategori, konum, renk, durum, adet; çift kayıt açılmaz)\n- Malzeme tablosu daha derli toplu; renk noktaları ve simgeler düzeltildi',
       en: '- Materials: “Import” button — bring in filaments at once from a Falcon Office “Stock list” CSV or any CSV/JSON (category, place, colour, condition, qty; no duplicates)\n- Tidier materials table; colour dots and icons fixed',

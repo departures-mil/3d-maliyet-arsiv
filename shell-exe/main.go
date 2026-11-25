@@ -32,7 +32,7 @@ const appName = "3D Maliyet ve Arsiv"
 const appID = "3d-maliyet-arsiv"
 
 // appVersion derlemede -ldflags "-X main.appVersion=X.Y.Z" ile verilir; araclar/surum.js burayı da yazar.
-var appVersion = "1.0.1"
+var appVersion = "1.0.2"
 
 // FixedPort: veriler bu kökene (http://127.0.0.1:41751) bağlıdır — DEĞİŞTİRMEYİN.
 const FixedPort = 41751
@@ -321,6 +321,9 @@ func shellAPI(w http.ResponseWriter, r *http.Request) {
 
 	case strings.HasPrefix(p, "lan/"):
 		lanAPI(w, r, strings.TrimPrefix(p, "lan/"))
+
+	case p == "ice-aktar" || p == "ice-aktar/bitti":
+		importInbox(w, r, p == "ice-aktar/bitti")
 
 	case p == "ocr":
 		ocrAPI(w, r)
