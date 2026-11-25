@@ -64,9 +64,21 @@ jobs:
       - name: NSIS kurulum (kullanıcı başına, tr/en/ar)
         shell: pwsh
         run: |
-          $mk = (Get-Command makensis -ErrorAction SilentlyContinue).Source
-          if (-not $mk) { $mk = "${env:ProgramFiles(x86)}\NSIS\makensis.exe" }
-          if (-not (Test-Path $mk)) { choco install nsis -y --no-progress | Out-Null; $mk = "${env:ProgramFiles(x86)}\NSIS\makensis.exe" }
+          function Find-Mk {
+            $c = @((Get-Command makensis -ErrorAction SilentlyContinue).Source, "${env:ProgramFiles(x86)}\NSIS\makensis.exe", "$env:ProgramFiles\NSIS\makensis.exe", "$env:ChocolateyInstall\bin\makensis.exe", "$env:RUNNER_TEMP\nsis\nsis-3.10\makensis.exe")
+            foreach ($x in $c) { if ($x -and (Test-Path $x)) { return $x } }
+            return $null
+          }
+          $mk = Find-Mk
+          if (-not $mk) { choco install nsis -y --no-progress 2>&1 | Select-Object -Last 5 | Out-Host; $mk = Find-Mk }
+          if (-not $mk) {
+            $z = "$env:RUNNER_TEMP\nsis.zip"
+            Invoke-WebRequest -UseBasicParsing -MaximumRetryCount 3 -Uri "https://downloads.sourceforge.net/project/nsis/NSIS%203/3.10/nsis-3.10.zip" -OutFile $z -UserAgent "curl/8"
+            Expand-Archive $z -DestinationPath "$env:RUNNER_TEMP\nsis" -Force
+            $mk = Find-Mk
+          }
+          if (-not $mk) { throw "makensis bulunamadı" }
+          Write-Host "makensis: $mk"
           $v = "${{ steps.ver.outputs.version }}"
           & $mk /V2 "/DVERSION=$v" "/DEXE=..\dist\MaliyetArsiv3D.exe" "/DOUTFILE=..\dist\MaliyetArsiv3D-Setup-$v.exe" kurulum\MaliyetArsiv3D.nsi
           if ($LASTEXITCODE -ne 0) { throw "makensis $LASTEXITCODE" }
