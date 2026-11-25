@@ -108,6 +108,18 @@ test('güncelleme uçları: FCD1 yama, bozuk yama, yanlış SHA, açılışta in
     assert.strictEqual(r.status, 400);
     r = await fetch(p.url + '/__shell/ocr', { method: 'POST', body: Buffer.alloc(64, 1) });
     assert.strictEqual(r.status, 501);
+    // gelen kutusu: veri\ice-aktar\*.json okunur, "bitti" ile islenen\ altına taşınır
+    fs.mkdirSync(path.join(dir, 'veri', 'ice-aktar'), { recursive: true });
+    fs.writeFileSync(path.join(dir, 'veri', 'ice-aktar', 'falcon.json'), JSON.stringify({ materials: [{ name: 'Black', serial: 'M-00001' }] }));
+    let ib = await (await fetch(p.url + '/__shell/ice-aktar')).json();
+    assert.strictEqual(ib.dosyalar.length, 1); assert.strictEqual(ib.dosyalar[0].veri.materials[0].serial, 'M-00001');
+    r = await fetch(p.url + '/__shell/ice-aktar/bitti', { method: 'POST', body: JSON.stringify({ ad: '../x.json' }) });
+    assert.strictEqual(r.status, 400);
+    r = await fetch(p.url + '/__shell/ice-aktar/bitti', { method: 'POST', body: JSON.stringify({ ad: 'falcon.json' }) });
+    assert.strictEqual(r.status, 200);
+    ib = await (await fetch(p.url + '/__shell/ice-aktar')).json();
+    assert.strictEqual(ib.dosyalar.length, 0);
+    assert.strictEqual(fs.readdirSync(path.join(dir, 'veri', 'ice-aktar', 'islenen')).length, 1);
     // Wi‑Fi durum ucu
     const lan = await (await fetch(p.url + '/__shell/lan/durum')).json();
     assert.ok('acik' in lan && Array.isArray(lan.esler));

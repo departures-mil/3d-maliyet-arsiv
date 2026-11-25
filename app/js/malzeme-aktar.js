@@ -20,7 +20,8 @@
     unitPrice: ['birim fiyat', 'fiyat', 'unit price', 'price', 'سعر الوحدة', 'السعر'],
     matType: ['tür', 'malzeme türü', 'type', 'material type', 'النوع'],
     note: ['not', 'açıklama', 'note', 'notes', 'ملاحظة'],
-    weightG: ['makara ağırlığı', 'ağırlık', 'weight', 'spool weight', 'الوزن']
+    weightG: ['makara ağırlığı', 'ağırlık', 'weight', 'spool weight', 'الوزن'],
+    currency: ['para birimi', 'currency', 'العملة', 'döviz']
   };
   function norm(s) { return String(s == null ? '' : s).toLocaleLowerCase('tr').replace(/\(.*?\)/g, '').replace(/[*:]/g, '').replace(/\s+/g, ' ').trim(); }
   function colOf(h) {
@@ -154,7 +155,8 @@
       if (lid) d.locationId = lid;
       if (o.unit && String(o.unit).trim()) d.unit = String(o.unit).trim();
       if (num(o.minQty) != null) d.minQty = num(o.minQty);
-      if (num(o.unitPrice) != null && num(o.unitPrice) > 0) d.unitPrice = num(o.unitPrice);
+      var cur = String(o.currency || '').trim().toUpperCase().replace('TL', 'TRY').replace('₺', 'TRY').replace('$', 'USD');
+      if (num(o.unitPrice) != null && num(o.unitPrice) > 0) d.unitPrice = cur && cur !== 'USD' && CALC.CUR[cur] ? CALC.toUsd(num(o.unitPrice), cur, S.settings) : num(o.unitPrice);
       if (num(o.weightG) != null && num(o.weightG) > 0) d.weightG = num(o.weightG);
       if (type) d.matType = type;
       if (o.note && String(o.note).trim()) d.note = String(o.note).trim();
@@ -205,5 +207,20 @@
     ] });
   }
 
-  A.matImport = { open: open, _parseCsv: parseCsv, _rowsToItems: rowsToItems, _jsonToItems: jsonToItems, _colorOf: colorOf, _condOf: condOf, _num: num, _apply: apply };
+  /* açılışta gelen kutusu: <veri>\ice-aktar\*.json (kabuk) → sessizce birleştir, dosyayı "işlenen"e taşı */
+  async function inbox() {
+    if (!window.MA3D_KABUK) return;
+    try {
+      var r = await fetch('/__shell/ice-aktar'); if (!r.ok) return;
+      var list = (await r.json()).dosyalar || [];
+      for (var i = 0; i < list.length; i++) {
+        var items = jsonToItems(list[i].veri);
+        if (items.length) { var m = await apply(items); A.toast(t('mi.done', { a: m.added, u: m.updated, c: m.cats, l: m.locs }), 'ok'); }
+        await fetch('/__shell/ice-aktar/bitti', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ad: list[i].ad }) });
+      }
+      if (list.length) A.render();
+    } catch (e) { }
+  }
+
+  A.matImport = { inbox: inbox,  open: open, _parseCsv: parseCsv, _rowsToItems: rowsToItems, _jsonToItems: jsonToItems, _colorOf: colorOf, _condOf: condOf, _num: num, _apply: apply };
 })();
