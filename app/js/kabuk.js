@@ -15,6 +15,11 @@
 
   /* sürüm notları ("neler yeni"; release-notes.json ile aynı) */
   var NEWS = {
+    '1.0.3': {
+      tr: '- Falcon Ofis\'ten gelen 24 filament Malzemeler\'e otomatik işlenir: renkler Falcon\'daki renk aileleriyle aynı, birim “adet”, marka ayrı alanda',
+      en: '- The 24 filaments from Falcon Office are merged into Materials automatically: colours match Falcon\'s colour families, unit “pcs”, brand in its own field',
+      ar: '- تُدمج الخيوط الـ24 من فالكون أوفيس في المواد تلقائيًا: الألوان مطابقة لعائلات الألوان في فالكون، والوحدة «قطعة»، والعلامة في حقلها'
+    },
     '1.0.2': {
       tr: '- Falcon Ofis malzemeleri otomatik aktarılır: veri klasöründeki “ice-aktar” kutusuna konan dosya açılışta Malzemeler\'e işlenir (çift kayıt yok, hiçbir şey silinmez)\n- İçe aktarmada TL fiyatlar dolara çevrilir',
       en: '- Falcon Office materials are imported automatically: a file placed in the data folder\'s “ice-aktar” box is merged into Materials at start-up (no duplicates, nothing deleted)\n- Imported TRY prices are converted to USD',
