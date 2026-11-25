@@ -32,7 +32,7 @@ const appName = "3D Maliyet ve Arsiv"
 const appID = "3d-maliyet-arsiv"
 
 // appVersion derlemede -ldflags "-X main.appVersion=X.Y.Z" ile verilir; araclar/surum.js burayı da yazar.
-var appVersion = "1.0.2"
+var appVersion = "1.0.3"
 
 // FixedPort: veriler bu kökene (http://127.0.0.1:41751) bağlıdır — DEĞİŞTİRMEYİN.
 const FixedPort = 41751

@@ -95,6 +95,7 @@
       Object.keys(m || {}).forEach(function (k) { var c = COLS[k] ? k : colOf(k); if (c && o[c] == null) o[c] = m[k]; });
       if (m.categoryPath) o.category = m.categoryPath;
       if (o.qty == null && m.initialQty != null) o.qty = m.initialQty;
+      if (m.colorDerivedFromName) delete o.color;   /* yaklaşık renk: kendi renk adı tablomuz Falcon'daki aileyi verir */
       return o;
     }).filter(function (o) { return String(o.name || '').trim(); });
   }
@@ -153,13 +154,13 @@
       var cd = condOf(o.condition); if (cd) d.condition = cd;
       d.categoryId = cid != null ? cid : (ex ? ex.categoryId : null);
       if (lid) d.locationId = lid;
-      if (o.unit && String(o.unit).trim()) d.unit = String(o.unit).trim();
+      var un = String(o.unit || '').trim(); if (/^(pcs|pc|piece|pieces|adet|قطعة)$/i.test(un)) un = t('u.pcs'); if (un) d.unit = un;
       if (num(o.minQty) != null) d.minQty = num(o.minQty);
       var cur = String(o.currency || '').trim().toUpperCase().replace('TL', 'TRY').replace('₺', 'TRY').replace('$', 'USD');
       if (num(o.unitPrice) != null && num(o.unitPrice) > 0) d.unitPrice = cur && cur !== 'USD' && CALC.CUR[cur] ? CALC.toUsd(num(o.unitPrice), cur, S.settings) : num(o.unitPrice);
       if (num(o.weightG) != null && num(o.weightG) > 0) d.weightG = num(o.weightG);
       if (type) d.matType = type;
-      if (o.note && String(o.note).trim()) d.note = String(o.note).trim();
+      if (o.note && String(o.note).trim() && norm(o.note) !== norm(o.brand)) d.note = String(o.note).trim();
       var ser = String(o.serial || '').trim();
       if (ser && !S.materials.some(function (m) { return m.id !== d.id && !m.deleted && String(m.serial || '').toUpperCase() === ser.toUpperCase(); })) d.serial = ser;
       else if (!d.serial) d.serial = DB.nextSerial('M', S.materials);
