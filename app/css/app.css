@@ -320,3 +320,31 @@ pre.notes{white-space:pre-wrap;font-family:inherit;margin:8px 0;padding:10px 12p
 .mat-tbl td{white-space:nowrap}
 .mat-tbl td.muted{font-size:12px}
 @media (max-width:1560px){.mat-tbl td.acts .btn .lbl{display:none}.mat-tbl td.acts .btn{padding-inline:8px}}
+
+/* proje maliyeti */
+.pj{display:flex;flex-direction:column;gap:14px}
+.pj .card-title{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pj-head{grid-template-columns:repeat(4,minmax(0,1fr))}
+.pj-drop{min-height:150px;margin-top:6px}
+.pj-tbl td{vertical-align:top}
+.pj-tbl input,.pj-tbl select{padding:5px 8px;font-size:13px;min-height:32px}
+.pj-tbl .rN{min-width:120px;width:100%}
+.pj-tbl input.num{width:56px;text-align:end}
+.pj-tbl .rT{width:80px}
+.pj-tbl input.mini{width:60px;margin-top:4px;padding:3px 6px;min-height:26px}
+.pj-tbl td small{display:block;margin-top:3px}
+.pj-mat{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.pj-mat select{max-width:200px;min-width:110px}
+.pj-tbl .rPr{max-width:150px}
+.pj-tbl td.r small{white-space:nowrap}
+.pj-mat .rG{width:64px}
+.pj-ph{cursor:zoom-in}
+.pj-note{max-width:260px;white-space:normal}
+.link-btn{background:none;border:0;color:var(--accent);cursor:pointer;font-size:12px;padding:2px 0}
+.pj-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+.pj-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:14px}
+.pj-cols h4{margin:0 0 6px;font-size:13px;color:var(--muted)}
+.pj-cols .kv th{width:auto}
+.pj-foot{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+tr.clickable{cursor:pointer}
+@media (max-width:1100px){.pj-head,.pj-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.pj-cols{grid-template-columns:1fr}}

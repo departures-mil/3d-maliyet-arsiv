@@ -521,5 +521,5 @@
     A.go('archive');
   }
 
-  A.importer = { open: open, batch: batch, analyze: analyze, _parseText: parseText, _parseGcode: parseGcode, _fromName: fromName, _dur: dur, _fromKV: fromKV, _fromAi: fromAi, _rowsFromWords: rowsFromWords, _typeOf: typeOf, _unzip: unzip, _parse3mf: parse3mf, _gramsFromMeters: gramsFromMeters, _matchPrinter: matchPrinter, _matchMaterial: matchMaterial, PROMPT: AI_PROMPT };
+  A.importer = { open: open, batch: batch, analyze: analyze, chooser: chooser, busy: busy, fmtDur: fmtDur, dur: dur, mergeAll: mergeAll, kindOf: kindOf, fromName: fromName, _parseText: parseText, _parseGcode: parseGcode, _fromName: fromName, _dur: dur, _fromKV: fromKV, _fromAi: fromAi, _rowsFromWords: rowsFromWords, _typeOf: typeOf, _unzip: unzip, _parse3mf: parse3mf, _gramsFromMeters: gramsFromMeters, _matchPrinter: matchPrinter, _matchMaterial: matchMaterial, PROMPT: AI_PROMPT };
 })();

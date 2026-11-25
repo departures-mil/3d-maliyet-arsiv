@@ -4,9 +4,9 @@
    Görseller ve ekler "files" deposunda Blob olarak durur; kayıtlar yalnız kimliklerini taşır. */
 (function () {
   'use strict';
-  var DB_NAME = 'maliyet-arsiv-3d', DB_VER = 1;
+  var DB_NAME = 'maliyet-arsiv-3d', DB_VER = 2;
   var STORES = ['meta', 'categories', 'locations', 'materials', 'movements', 'printers', 'printerLogs', 'customers',
-    'jobs', 'expenses', 'costItems', 'lists', 'fields', 'files', 'cakismalar'];
+    'jobs', 'projects', 'expenses', 'costItems', 'lists', 'fields', 'files', 'cakismalar'];
   /* eşitlenen depolar (meta ve çakışma yedekleri cihazda kalır) */
   var SYNCED = STORES.filter(function (s) { return s !== 'meta' && s !== 'cakismalar'; });
   var _db = null, subs = [];
