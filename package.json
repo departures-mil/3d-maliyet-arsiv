@@ -1,6 +1,6 @@
 {
   "name": "3d-maliyet-arsiv",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "3D Maliyet ve Arşiv — 3D baskı maliyet/kâr hesabı, arşiv, malzeme (filament) stoku ve yazıcı kayıtları. Windows masaüstü (kurulumlu).",
   "license": "UNLICENSED",

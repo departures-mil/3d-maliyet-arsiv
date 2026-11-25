@@ -154,3 +154,25 @@ test('eşitleme kuralı (GitHub ve Wi‑Fi aynı): yeni olan kalır, eskisi çak
   assert.ok(by.b.archived, 'silinen kayıt arşivlenir, kaybolmaz'); assert.strictEqual(r.archived.length, 1);
   assert.ok(r.conflicts.length >= 1, 'üstüne yazılan sürüm saklanır');
 });
+
+test('malzeme içe aktarma: Falcon Ofis döküm CSV başlıkları, kategori yolu, renk adları, durum', () => {
+  const ctx = sandbox([], {});
+  ctx.FC = { ui: {} };
+  ctx.APP = { S: { materials: [], categories: [], locations: [] }, t: (k) => k, esc: (s) => s };
+  vm.runInContext(read('app/js/malzeme-aktar.js'), ctx, { filename: 'malzeme-aktar.js' });
+  const I = ctx.APP.matImport;
+  const csv = '\uFEFFSeri No;Ad;Marka;Durum;Kategori;Konum;Adet;Birim;Asgari adet;Birim fiyat (USD)\nM-00024;Beige;eSUN;Sıfır;Filament › PLA+;AMTN Home;1;adet;0;13,00\nM-00005;"Olive Green";eSUN;Kullanılmış;Filament › PLA+;AMTN Home;5;adet;0;\n';
+  const items = I._rowsToItems(I._parseCsv(csv));
+  assert.strictEqual(items.length, 2);
+  assert.strictEqual(items[0].serial, 'M-00024');
+  assert.strictEqual(items[0].category, 'Filament › PLA+');
+  assert.strictEqual(I._num(items[0].unitPrice), 13);
+  assert.strictEqual(I._num(items[1].qty), 5);
+  assert.strictEqual(I._condOf('Sıfır'), 'new'); assert.strictEqual(I._condOf('Kullanılmış'), 'used'); assert.strictEqual(I._condOf('Used'), 'used');
+  assert.strictEqual(I._colorOf('', 'Black'), '#111111');
+  assert.strictEqual(I._colorOf('', 'Dark Gray'), '#4b5563');
+  assert.strictEqual(I._colorOf('#ABCDEF', 'x'), '#abcdef');
+  const en = I._rowsToItems(I._parseCsv('Name,Brand,Category,Qty\nRed,eSUN,Filament > PETG,2\n'));
+  assert.strictEqual(en[0].name, 'Red'); assert.strictEqual(en[0].qty, '2');
+  assert.strictEqual(I._jsonToItems({ materials: [{ name: 'X', serial: 'M-1', categoryPath: 'Filament › ABS', initialQty: 3 }] })[0].qty, 3);
+});
