@@ -95,7 +95,9 @@
       Object.keys(m || {}).forEach(function (k) { var c = COLS[k] ? k : colOf(k); if (c && o[c] == null) o[c] = m[k]; });
       if (m.categoryPath) o.category = m.categoryPath;
       if (o.qty == null && m.initialQty != null) o.qty = m.initialQty;
-      if (m.colorDerivedFromName) delete o.color;   /* yaklaşık renk: kendi renk adı tablomuz Falcon'daki aileyi verir */
+      if (m.colorDerivedFromName) delete o.color;
+      if (Array.isArray(m.movements)) o.movements = m.movements;
+      if (m.falconId != null) o.srcId = String(m.falconId);   /* yaklaşık renk: kendi renk adı tablomuz Falcon'daki aileyi verir */
       return o;
     }).filter(function (o) { return String(o.name || '').trim(); });
   }
@@ -140,8 +142,32 @@
     return { nNew: nNew, nUpd: nUpd };
   }
 
+  function mvType(v) {
+    var n = norm(v);
+    if (/^(in|giriş|giris|stok girişi|إدخال|purchase|alış)/.test(n)) return 'in';
+    if (/^(out|çıkış|cikis|stok çıkışı|إخراج|sale|satış)/.test(n)) return 'out';
+    if (/^(use|kullanım|kullanim|consume)/.test(n)) return 'use';
+    if (/^(adjust|düzeltme|sayım|correction|تصحيح)/.test(n)) return 'adjust';
+    return 'info';
+  }
+  function dayOf(v) { var s = String(v || ''); var m = /^(\d{4}-\d{2}-\d{2})/.exec(s); return m ? m[1] : A.today(); }
+  /* kaynak hareketleri (Falcon giriş/çıkış geçmişi) aynı kimlikle yazılır: ikinci aktarımda çoğalmaz */
+  async function writeMoves(mat, o) {
+    var list = o.movements || [];
+    for (var j = 0; j < list.length; j++) {
+      var v = list[j] || {}, ty = mvType(v.type || v.kind || v.direction || v.tur || v.tip);
+      var q = num(v.qty != null ? v.qty : v.quantity != null ? v.quantity : v.adet != null ? v.adet : v.miktar);
+      var key = v.id != null ? String(v.id) : (dayOf(v.date || v.createdAt) + '-' + ty + '-' + q + '-' + j);
+      var cur = String(v.currency || '').trim().toUpperCase().replace('TL', 'TRY');
+      var up = num(v.unitPrice != null ? v.unitPrice : v.price);
+      await DB.put('movements', { id: 'imp-' + (o.srcId || mat.serial || mat.id) + '-' + key.replace(/[^A-Za-z0-9_-]/g, ''), materialId: mat.id, type: ty, qty: Math.abs(q || 0) * (ty === 'adjust' && q < 0 ? -1 : 1),
+        date: dayOf(v.date || v.createdAt), party: v.party || v.from || v.to || v.kimden || v.kime || '', note: v.note || v.aciklama || t('mi.note'),
+        unitPrice: up && up > 0 ? (cur && cur !== 'USD' && CALC.CUR[cur] ? CALC.toUsd(up, cur, S.settings) : up) : undefined });
+    }
+  }
+
   async function apply(items) {
-    var made = { added: 0, updated: 0, cats: 0, locs: 0 };
+    var made = { added: 0, updated: 0, cats: 0, locs: 0 }, pend = [];
     for (var i = 0; i < items.length; i++) {
       var o = items[i], cid = await catId(o.category, made), lid = await locId(o.location, made);
       var ex = findExisting(o, cid);
@@ -164,7 +190,15 @@
       var ser = String(o.serial || '').trim();
       if (ser && !S.materials.some(function (m) { return m.id !== d.id && !m.deleted && String(m.serial || '').toUpperCase() === ser.toUpperCase(); })) d.serial = ser;
       else if (!d.serial) d.serial = DB.nextSerial('M', S.materials);
-      var q = num(o.qty);
+      var q = num(o.qty), hasMv = Array.isArray(o.movements) && o.movements.length > 0;
+      if (hasMv) {
+        if (!ex) d.initialQty = 0;
+        var mt = await DB.put('materials', d);
+        if (ex) { S.materials[S.materials.indexOf(ex)] = mt; made.updated++; } else { S.materials.push(mt); made.added++; }
+        await writeMoves(mt, o);
+        pend.push({ id: mt.id, q: q });
+        continue;
+      }
       if (ex) {
         var saved = await DB.put('materials', d); S.materials[S.materials.indexOf(ex)] = saved; made.updated++;
         if (q != null) { var diff = q - A.stockOf(ex.id); if (Math.abs(diff) > 1e-9) await DB.put('movements', { materialId: ex.id, type: 'adjust', qty: diff, date: A.today(), note: t('mi.note') }); }
@@ -175,7 +209,21 @@
       }
     }
     await A.reload();
+    /* hareketlerle gelen kayıtlar: kaynaktaki stokla fark kalırsa sayım düzeltmesi */
+    if (pend.length) {
+      for (var k = 0; k < pend.length; k++) { var pq = pend[k]; if (pq.q == null) continue; var df = pq.q - A.stockOf(pq.id); if (Math.abs(df) > 1e-9) await DB.put('movements', { id: 'imp-fix-' + pq.id, materialId: pq.id, type: 'adjust', qty: df, date: A.today(), note: t('m.adjustNote') }); }
+      await A.reload();
+    }
     return made;
+  }
+  /* Falcon'dan gelince: hiç kullanılmamış örnek kategoriler (Reçine, Sarf, Yedek parça) kaldırılır, ağaç Falcon'daki gibi olur */
+  async function tidySeed() {
+    var ids = ['cat-resin', 'cat-parts', 'cat-consum'];
+    for (var i = 0; i < ids.length; i++) {
+      var c = A.byId(S.categories, ids[i]);
+      if (c && !c.deleted && !S.materials.some(function (m) { return m.categoryId === c.id; }) && !S.categories.some(function (x) { return x.parentId === c.id && !x.deleted; })) await DB.del('categories', c.id);
+    }
+    await A.reload();
   }
 
   async function readFile(f) {
@@ -209,19 +257,42 @@
   }
 
   /* açılışta gelen kutusu: <veri>\ice-aktar\*.json (kabuk) → sessizce birleştir, dosyayı "işlenen"e taşı */
+  async function take(veri, name) {
+    var items = jsonToItems(veri);
+    if (!items.length) return false;
+    var m = await apply(items);
+    if (/falcon/i.test(String(name || '')) || /falcon/i.test(String((veri && (veri.source || veri.kaynak)) || ''))) await tidySeed();
+    A.toast(t('mi.done', { a: m.added, u: m.updated, c: m.cats, l: m.locs }), 'ok');
+    return true;
+  }
   async function inbox() {
     if (!window.MA3D_KABUK) return;
+    var any = false;
     try {
-      var r = await fetch('/__shell/ice-aktar'); if (!r.ok) return;
-      var list = (await r.json()).dosyalar || [];
-      for (var i = 0; i < list.length; i++) {
-        var items = jsonToItems(list[i].veri);
-        if (items.length) { var m = await apply(items); A.toast(t('mi.done', { a: m.added, u: m.updated, c: m.cats, l: m.locs }), 'ok'); }
-        await fetch('/__shell/ice-aktar/bitti', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ad: list[i].ad }) });
+      var r = await fetch('/__shell/ice-aktar');
+      if (r.ok) {
+        var list = (await r.json()).dosyalar || [];
+        for (var i = 0; i < list.length; i++) {
+          if (await take(list[i].veri, list[i].ad)) any = true;
+          await fetch('/__shell/ice-aktar/bitti', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ad: list[i].ad }) });
+        }
       }
-      if (list.length) A.render();
     } catch (e) { }
+    /* eski kabuklar (ice-aktar ucu yok): aynı dosya Wi‑Fi gelen kutusuna (veri\wifi-gelen) konabilir */
+    try {
+      var g = await fetch('/__shell/lan/gelen');
+      if (g.ok) {
+        var gl = await g.json();
+        for (var j = 0; j < gl.length; j++) {
+          var msg = await (await fetch('/__shell/lan/gelen-oku?dosya=' + encodeURIComponent(gl[j].dosya))).json();
+          if (!msg || msg.data || !(msg.materials || msg.malzemeler)) continue;
+          if (await take(msg, gl[j].dosya)) any = true;
+          await fetch('/__shell/lan/gelen-sil?dosya=' + encodeURIComponent(gl[j].dosya), { method: 'POST', body: '' });
+        }
+      }
+    } catch (e) { }
+    if (any) A.render();
   }
 
-  A.matImport = { inbox: inbox,  open: open, _parseCsv: parseCsv, _rowsToItems: rowsToItems, _jsonToItems: jsonToItems, _colorOf: colorOf, _condOf: condOf, _num: num, _apply: apply };
+  A.matImport = { inbox: inbox, take: take, open: open, _parseCsv: parseCsv, _rowsToItems: rowsToItems, _jsonToItems: jsonToItems, _colorOf: colorOf, _condOf: condOf, _num: num, _apply: apply };
 })();

@@ -69,6 +69,7 @@
       var it = list[i];
       try {
         var msg = await api('gelen-oku?dosya=' + encodeURIComponent(it.dosya));
+        if (msg && !msg.data && (msg.materials || msg.malzemeler)) { if (A.matImport) await A.matImport.inbox(); continue; }
         if (msg && msg.data) {
           busy = true; setTop();
           var r = await A.sync.mergeData(msg.data, 'Wi‑Fi: ' + (msg.ad || it.ad || it.kimden || ''));
