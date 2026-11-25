@@ -15,6 +15,11 @@
 
   /* sürüm notları ("neler yeni"; release-notes.json ile aynı) */
   var NEWS = {
+    '1.0.1': {
+      tr: '- Malzemeler: “İçe aktar” düğmesi — Falcon Ofis “Döküm al” CSV dosyası ya da CSV/JSON ile filamentler tek seferde aktarılır (kategori, konum, renk, durum, adet; çift kayıt açılmaz)\n- Malzeme tablosu daha derli toplu; renk noktaları ve simgeler düzeltildi',
+      en: '- Materials: “Import” button — bring in filaments at once from a Falcon Office “Stock list” CSV or any CSV/JSON (category, place, colour, condition, qty; no duplicates)\n- Tidier materials table; colour dots and icons fixed',
+      ar: '- المواد: زر «استيراد» — استيراد الخيوط دفعة واحدة من ملف CSV «كشف المخزون» في فالكون أوفيس أو أي CSV/JSON (الفئة والمكان واللون والحالة والكمية؛ بلا تكرار)\n- جدول مواد أكثر ترتيبًا؛ إصلاح نقاط الألوان والأيقونات'
+    },
     '1.0.0': {
       tr: '- Maliyet ve kâr hesaplayıcı: her kalem eklenir, çıkarılır, yeniden adlandırılır\n- Arşiv: basılan parçaların görselleri, dosyaları, teklif ve tekrar basım\n- Malzemeler (Falcon Ofis düzeni): kategori ağacı, renkler, konumlar, giriş/çıkış, QR etiket, döküm\n- Filament stoku: işlerde kullanılan gram makaradan düşer\n- Yazıcı kayıtları: bakım planı, arıza/bakım geçmişi, saat ve kâr\n- Dilimleyici ekran görüntüsünden, G-code ve 3MF\'den otomatik kayıt (onaylı)\n- Müşteriler, giderler, panel, raporlar; yapay zeka asistanı ve çeviri\n- GitHub ve Wi‑Fi eşitleme; tek tuşla güncelleme; Türkçe · English · العربية',
       en: '- Cost and profit calculator: every item can be added, removed and renamed\n- Archive: photos of printed parts, files, quotes and reprints\n- Materials (Falcon Office layout): category tree, colours, locations, in/out, QR labels, stock list\n- Filament stock: grams used in jobs are deducted from the spool\n- Printer records: maintenance plan, service/fault history, hours and profit\n- Automatic records from slicer screenshots, G-code and 3MF (after your approval)\n- Customers, expenses, dashboard, reports; AI assistant and translation\n- GitHub and Wi‑Fi sync; one-click updates; Türkçe · English · العربية',

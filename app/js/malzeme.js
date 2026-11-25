@@ -100,6 +100,7 @@
       '<label class="check"><input type="checkbox" id="mLow"' + (F.low ? ' checked' : '') + '><span>' + esc(t('m.lowOnly')) + '</span></label>' +
       '<span class="fc-spacer"></span>' +
       '<button type="button" class="btn small" id="mLocs">' + A.icon('pin') + esc(t('m.locations')) + '</button>' +
+      '<button type="button" class="btn small" id="mImp">' + A.icon('download') + esc(t('mi.btn')) + '</button>' +
       '<button type="button" class="btn small" id="mDump">' + A.icon('file') + esc(t('m.dump')) + '</button>' +
       '<button type="button" class="btn small" id="mQr">' + A.icon('qr') + esc(t('m.qrLabel')) + '</button>' +
       '<button type="button" class="btn small primary" id="mNew">' + A.icon('plus') + esc(t('m.new')) + '</button>';
@@ -132,11 +133,11 @@
           '<td>' + esc(A.nameOf(S.locations, m.locationId, '—')) + '</td>' +
           '<td class="r"><b' + (low ? ' class="lowtxt"' : '') + '>' + qtyTxt + '</b>' + (sub.length ? '<small>' + sub.join(' · ') + '</small>' : '') + '</td>' +
           '<td class="r">' + A.num(m.minQty || 0, 0) + '</td>' +
-          '<td class="acts"><button type="button" class="btn small success in">' + A.icon('arrowIn') + esc(t('m.in')) + '</button>' +
-          '<button type="button" class="btn small danger-soft out">' + A.icon('arrowOut') + esc(t('m.out')) + '</button>' +
+          '<td class="acts"><button type="button" class="btn small success in">' + A.icon('arrowIn') + '<span class="lbl">' + esc(t('m.in')) + '</span></button>' +
+          '<button type="button" class="btn small danger-soft out">' + A.icon('arrowOut') + '<span class="lbl">' + esc(t('m.out')) + '</span></button>' +
           A.iconBtn('qr', t('m.qr'), 'qr') + A.iconBtn('history', t('m.history'), 'hist') + A.iconBtn('edit', t('a.edit'), 'edit') + A.iconBtn('trash', t('a.delete'), 'del danger') + '</td></tr>';
       }).join('');
-      card.innerHTML = '<div class="tablewrap"><table class="tbl"><thead><tr><th>' + esc(t('m.col.name')) + '</th><th>' + esc(t('m.col.category')) + '</th><th>' + esc(t('m.col.serial')) +
+      card.innerHTML = '<div class="tablewrap"><table class="tbl mat-tbl"><thead><tr><th>' + esc(t('m.col.name')) + '</th><th>' + esc(t('m.col.category')) + '</th><th>' + esc(t('m.col.serial')) +
         '</th><th>' + esc(t('m.col.location')) + '</th><th class="r">' + esc(t('m.col.qty')) + '</th><th class="r">' + esc(t('m.col.min')) + '</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
         '<div class="table-foot">' + esc(t('m.foot', { n: list.length, v: A.money(list.reduce(function (s, m) { return s + Math.max(0, A.stockOf(m.id)) * CALC.num(m.unitPrice); }, 0)) })) + '</div>';
     }
@@ -153,6 +154,7 @@
     host.querySelector('#mLow').onchange = function (e) { F.low = e.target.checked; A.render(); };
     host.querySelector('#mLocs').onclick = locationsDialog;
     host.querySelector('#mDump').onclick = function () { dump(list); };
+    host.querySelector('#mImp').onclick = function () { A.matImport.open(); };
     host.querySelector('#mQr').onclick = function () { qrLabels(list); };
     host.querySelector('#mNew').onclick = function () { materialForm(null); };
     A.$$('.chip', chips).forEach(function (c) { c.onclick = function () { F.color = c.getAttribute('data-c'); A.render(); }; });

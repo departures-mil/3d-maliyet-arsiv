@@ -314,3 +314,9 @@ pre.notes{white-space:pre-wrap;font-family:inherit;margin:8px 0;padding:10px 12p
   .search{flex:1 1 100%}
 }
 @media print{.sidebar,.topbar{display:none}}
+
+/* malzeme tablosu: tek satırlık hücreler, dar ekranda Giriş/Çıkış yalnız simge */
+.namecell b .dot{margin-inline-end:6px;vertical-align:middle}
+.mat-tbl td{white-space:nowrap}
+.mat-tbl td.muted{font-size:12px}
+@media (max-width:1560px){.mat-tbl td.acts .btn .lbl{display:none}.mat-tbl td.acts .btn{padding-inline:8px}}
