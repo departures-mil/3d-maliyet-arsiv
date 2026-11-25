@@ -17,7 +17,7 @@
 
   async function reload() {
     S.settings = await DB.getSettings();
-    var names = ['categories', 'locations', 'materials', 'movements', 'printers', 'printerLogs', 'customers', 'jobs', 'expenses', 'costItems', 'lists', 'fields'];
+    var names = ['categories', 'locations', 'materials', 'movements', 'printers', 'printerLogs', 'customers', 'jobs', 'projects', 'expenses', 'costItems', 'lists', 'fields'];
     var res = await Promise.all(names.map(function (n) { return DB.all(n); }));
     names.forEach(function (n, i) { S[n] = res[i]; });
     S.costItems.sort(function (a, b) { return (a.order || 0) - (b.order || 0); });

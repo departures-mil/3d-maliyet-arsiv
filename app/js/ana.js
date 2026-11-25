@@ -50,7 +50,8 @@
   function importable(files) { return files.filter(function (f) { return /^image\//.test(f.type) || /\.(gcode|gco|3mf|bgcode)$/i.test(f.name || ''); }); }
   function handleFiles(files) {
     files = importable(files); if (!files.length) return false;
-    if (S.page === 'calc') A.importer.open(function (res) { if (!S.draft) S.draft = A.calc.newDraft(); A.calc.applyImport(S.draft, res); A.render(); }, files);
+    if (S.page === 'projects') A.go('projects', { files: files });
+    else if (S.page === 'calc') A.importer.open(function (res) { if (!S.draft) S.draft = A.calc.newDraft(); A.calc.applyImport(S.draft, res); A.render(); }, files);
     else A.importer.batch(files);
     return true;
   }

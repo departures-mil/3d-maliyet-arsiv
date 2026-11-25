@@ -277,7 +277,7 @@
   }
 
   /* ---------------- silinenler ve çakışma yedekleri ---------------- */
-  var STORE_NAMES = ['jobs', 'materials', 'movements', 'printers', 'printerLogs', 'customers', 'expenses', 'categories', 'locations', 'costItems', 'lists', 'fields'];
+  var STORE_NAMES = ['jobs', 'projects', 'materials', 'movements', 'printers', 'printerLogs', 'customers', 'expenses', 'categories', 'locations', 'costItems', 'lists', 'fields'];
   function recName(r) { return r ? (r.name || r.title || r.code || r.party || r.serial || r.id) : ''; }
   function trash() {
     var c = cardEl('trash', 'trash', t('st.trash'), t('st.trashDesc'));
