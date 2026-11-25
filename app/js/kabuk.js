@@ -15,6 +15,11 @@
 
   /* sürüm notları ("neler yeni"; release-notes.json ile aynı) */
   var NEWS = {
+    '1.0.4': {
+      tr: '- Falcon Ofis malzemeleri giriş/çıkış geçmişiyle birlikte aktarılır; eski kurulumlarda da çalışır (güncellemeden sonra kendiliğinden)\n- Falcon\'dan aktarılınca kullanılmayan örnek kategoriler kalkar, ağaç Falcon\'daki gibi olur',
+      en: '- Falcon Office materials are imported with their stock in/out history; works on older installs too (automatically after updating)\n- After a Falcon import, unused sample categories are removed so the tree matches Falcon',
+      ar: '- تُستورد مواد فالكون أوفيس مع سجل الإدخال والإخراج؛ ويعمل ذلك في التثبيتات القديمة أيضًا (تلقائيًا بعد التحديث)\n- بعد الاستيراد من فالكون تُزال الفئات النموذجية غير المستخدمة لتطابق الشجرة فالكون'
+    },
     '1.0.3': {
       tr: '- Falcon Ofis\'ten gelen 24 filament Malzemeler\'e otomatik işlenir: renkler Falcon\'daki renk aileleriyle aynı, birim “adet”, marka ayrı alanda',
       en: '- The 24 filaments from Falcon Office are merged into Materials automatically: colours match Falcon\'s colour families, unit “pcs”, brand in its own field',
